@@ -42,6 +42,36 @@ public class TareaControlador {
     }
     
     /**
+     * Método para buscar una tarea por ID.
+     * @param id Identificador de la tarea.
+     * @return Tarea encontrada o mensaje si no existe.
+     */
+    public Tarea buscarTarea(int id) {
+        // Crear una instancia de Tarea
+        Tarea tarea = new Tarea();
+
+        // Llamar al método del modelo para buscar la tarea
+        tarea = tarea.buscarTareaPorId(id);
+
+        // Retornar la tarea encontrada o null si no existe
+        return tarea;
+    }
+    
+    public String actualizarTarea(int id,String nombre,String descripcion,boolean estado){
+    
+        //Creamos el objeto tarea con los datos entregados
+        Tarea tarea = new Tarea(id,nombre,descripcion,estado);
+        
+        //Vamos a llamar el metodo para actualizar la tarea
+        if(tarea.actualizarTarea()){
+            return "Tarea editada satisfactoriamente";
+        }else{
+            return "No se pudo actualizar la tarea, revise los datos";
+        }
+        
+    }
+    
+    /**
      * 
      * @return Lista de tareas
      * @throws TareaException  SI ocurre un error al obtener las tareas

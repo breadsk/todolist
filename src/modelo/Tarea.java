@@ -11,6 +11,7 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,7 +26,7 @@ public class Tarea {
     
     public Tarea(){}
     
-    public Tarea(String nombre,String descripcion,Boolean estado){        
+    public Tarea(String nombre,String descripcion,Boolean estado){
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.estado = estado;
@@ -36,6 +37,92 @@ public class Tarea {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.estado = estado;
+    }
+    
+    public Tarea buscarTareaPorId(int id){
+        
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Tarea tarea = null;
+        
+        try {
+        // Establecer la conexión con la base de datos
+        connection = Conexion.getConnection();
+
+        // Consulta SQL para buscar la tarea por ID
+        String sql = "SELECT * FROM tarea WHERE id = ?";
+
+        // Preparar la declaración
+        ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+
+        // Ejecutar la consulta
+        rs = ps.executeQuery();
+
+        // Si se encuentra un resultado, crear el objeto Tarea
+        if (rs.next()) {
+            tarea = new Tarea();
+            tarea.setId(rs.getInt("id"));
+            tarea.setNombre(rs.getString("nombre"));
+            tarea.setDescripcion(rs.getString("descripcion"));
+            tarea.setEstado(rs.getBoolean("estado"));
+        }
+        } catch (SQLException ex) {
+            System.out.println("Error en: " + ex.getMessage());
+        } finally {
+            try {
+                // Cerrar los recursos
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (connection != null && !connection.isClosed()) connection.close();
+            } catch (SQLException ex) {
+                System.out.println("Error en: " + ex.getMessage());
+            }
+        }
+
+        return tarea;
+    }
+    
+    public boolean actualizarTarea(){
+        
+        Connection connection = null;
+        PreparedStatement ps = null;
+        
+        try{
+        
+            //Establecer la conexión con la bd
+            connection = Conexion.getConnection();
+            
+            //Preparar el Statement
+            String url = "UPDATE tarea SET nombre = ?, descripcion = ? WHERE id = ?";
+            
+            ps = connection.prepareStatement(url);
+            
+            //Asignar los valores a los parametros
+            ps.setString(1,this.nombre);
+            ps.setString(2,this.descripcion);
+            ps.setInt(3, this.id);
+            
+            //Ejecutamos la consulta
+            int resultado = ps.executeUpdate();
+            
+            return resultado > 0;
+            
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(null,"Error en: "+ ex.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
+            return false;
+        }finally{
+            try{
+            
+                if(ps != null) ps.close();
+                if(connection != null && !connection.isClosed()) connection.close();
+            }catch(SQLException ex){
+                System.out.println("Error en: "+ ex.getMessage());
+            }
+            
+        }
+    
     }
     
     /**
@@ -50,7 +137,9 @@ public class Tarea {
     public List<Tarea> listarTareas(){
         Connection connection = null;
         PreparedStatement ps = null;
+        
         ResultSet rs = null;
+        
         List<Tarea> tareas = new ArrayList<>();
         
         try{

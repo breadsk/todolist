@@ -48,6 +48,8 @@ public class TareasVista extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescripcion = new javax.swing.JTextArea();
         btnGuardar = new javax.swing.JToggleButton();
+        btnTarea = new javax.swing.JButton();
+        txtId = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblTareas = new javax.swing.JTable();
@@ -59,19 +61,23 @@ public class TareasVista extends javax.swing.JFrame {
 
         jLabel1.setText("Nombre Tarea");
 
-        txtNombre.setText("Tarea de prueba");
-
         jLabel2.setText("Descripción");
 
         txtDescripcion.setColumns(20);
         txtDescripcion.setRows(5);
-        txtDescripcion.setText("Esta es una tarea de prueba\n");
         jScrollPane1.setViewportView(txtDescripcion);
 
         btnGuardar.setText("Guardar Tarea");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGuardarActionPerformed(evt);
+            }
+        });
+
+        btnTarea.setText("Buscar Tarea");
+        btnTarea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTareaActionPerformed(evt);
             }
         });
 
@@ -86,7 +92,11 @@ public class TareasVista extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
-                    .addComponent(txtNombre))
+                    .addComponent(txtNombre)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnTarea, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(txtId)))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -102,6 +112,10 @@ public class TareasVista extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
                 .addComponent(btnGuardar)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTarea)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -141,10 +155,10 @@ public class TareasVista extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(btnVerTareas)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addGap(17, 17, 17))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -163,9 +177,9 @@ public class TareasVista extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(126, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -173,7 +187,7 @@ public class TareasVista extends javax.swing.JFrame {
 
     private void cargarTareasEnTabla(){        
         try{
-            System.out.println("Se esta llamando");
+            
             //Primero obtenemos la lista de tareas desde el controlador
             List<Tarea> tareas = tareaControlador.listarTareas();
                         
@@ -201,22 +215,37 @@ public class TareasVista extends javax.swing.JFrame {
     }
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String nombre = txtNombre.getText();
-        String descripcion = txtDescripcion.getText();
-        
-        try{
-        
-            tareaControlador = new TareaControlador();
-            tareaControlador.crearTarea(nombre, descripcion);
-            
-            JOptionPane.showMessageDialog(null,"Tarea guardada satisfactoriamente","Datos guardados", JOptionPane.OK_OPTION);
-            limpiar();
-            
-        }catch(Exception ex){
-            //JOptionPane.showMessageDialog(null,"Error en: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println("Aqui se esta cayendo: " + ex.getMessage());
+            String nombre = txtNombre.getText();
+            String descripcion = txtDescripcion.getText();
+
+            try {
+                // Validar si el campo ID está vacío
+                if (txtId.getText().trim().isEmpty()) {
+                // Crear una nueva tarea
+                System.out.println("Entra por aquí, si el ID está vacío");
+                tareaControlador = new TareaControlador();
+                tareaControlador.crearTarea(nombre, descripcion);
+
+                JOptionPane.showMessageDialog(null, "Tarea guardada satisfactoriamente", "Datos guardados", JOptionPane.OK_OPTION);
+                limpiar();
+                limpiar2();
+                cargarTareasEnTabla();
+                } else {
+                // Actualizar la tarea existente
+                int id = Integer.parseInt(txtId.getText().trim()); // Convertir solo si el campo no está vacío
+                tareaControlador = new TareaControlador();
+                tareaControlador.actualizarTarea(id, nombre, descripcion, true);
+
+                JOptionPane.showMessageDialog(null, "Tarea editada satisfactoriamente", "Datos Editados", JOptionPane.OK_OPTION);
+                limpiar();
+                limpiar2();
+                cargarTareasEnTabla();
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "El ID debe ser un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Error en: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
         
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -224,10 +253,38 @@ public class TareasVista extends javax.swing.JFrame {
         cargarTareasEnTabla();        
     }//GEN-LAST:event_btnVerTareasActionPerformed
 
+    private void btnTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTareaActionPerformed
+        
+        try{
+            
+            int id = Integer.parseInt(txtId.getText());
+            
+            //Llamamos al controlador para buscar si la tarea existe o no
+            Tarea tarea = tareaControlador.buscarTarea(id);
+            
+            //Vamos a preguntar si la tarea existe o no
+            if(tarea != null){
+                txtNombre.setText(tarea.getNombre());
+                txtDescripcion.setText(tarea.getDescripcion());
+            }else{
+                JOptionPane.showMessageDialog(this,"No hay tareas por ese ID, intentelo nuevamente","Error",JOptionPane.ERROR_MESSAGE);
+            }
+            
+            }catch(NumberFormatException ex){
+                JOptionPane.showMessageDialog(null,"Error, solo permite numeros","Error en: ",JOptionPane.ERROR_MESSAGE);
+                limpiar2();
+            }
+        
+    }//GEN-LAST:event_btnTareaActionPerformed
+
     private void limpiar(){
         txtNombre.setText("");
         txtDescripcion.setText("");
        
+    }
+    
+    private void limpiar2(){
+        txtId.setText("");
     }
     
     
@@ -269,6 +326,7 @@ public class TareasVista extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnGuardar;
+    private javax.swing.JButton btnTarea;
     private javax.swing.JButton btnVerTareas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -278,6 +336,7 @@ public class TareasVista extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblTareas;
     private javax.swing.JTextArea txtDescripcion;
+    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }
